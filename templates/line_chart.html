@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ title }}</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+</head>
+
+<body>
+
+  <center>
+    <h1 style="font-family: arial">{{ title }}</h1>
+    <h3 style="font-family: arial"><span style="color: red">-&#9679;- Download(Mbps)</span>&nbsp;&nbsp;&nbsp;<span style="color: blue">-&#9679;- Upload(Mbps)</span></h3>
+
+
+    <canvas id="chart" width="1200" height="600"></canvas>
+
+    <div style="font-family: arial">
+      <table id="speedtest_table">
+        <tbody>
+          <tr>
+            <th>Timestamp</th>
+            <th>Speedtest Links</th>
+          </tr>
+        </tbody>
+      </table>
+      <script>
+        /*
+        var timedata =  [
+          {% for item in labels %}
+            "{{ item }}",
+          {% endfor %}
+        ];
+
+        var linksdata =  [
+          {% for item in links %}
+            "{{ item }}",
+          {% endfor %}
+        ];
+
+        var table = document.getElementById("speedtest_table");
+        var rowNode = document.createElement("tr");
+
+        //Timestamps
+        var cellNode1 = document.createElement("td");
+        var textNode1 = document.createTextNode(timedata[0]);
+
+        //Links
+        var cellNode2 = document.createElement("td");
+        var textNode2 = document.createTextNode(linksdata[0]);
+
+        cellNode1.appendChild(textNode1);
+        cellNode2.appendChild(textNode2);
+        rowNode.appendChild(cellNode1);
+        rowNode.appendChild(cellNode2);
+        table.appendChild(rowNode);
+        */
+        var timedata =  [
+              {% for item in labels %}
+                "{{ item }}",
+              {% endfor %}
+            ];
+
+        var linksdata =  [
+              {% for item in links %}
+                "{{ item }}",
+              {% endfor %}
+            ];
+        for (let i = 0; i < timedata.length; i++){
+
+
+            var table = document.getElementById("speedtest_table");
+            var rowNode = document.createElement("tr");
+
+            //Timestamps
+            var cellNode1 = document.createElement("td");
+            var textNode1 = document.createTextNode(timedata[i]);
+
+            //Links
+            var cellNode2 = document.createElement("td");
+            var textNode2 = document.createTextNode(linksdata[i]);
+            var aNode2 = document.createElement("a");
+            aNode2.setAttribute("href",linksdata[i]);
+            aNode2.setAttribute("target","_blank");
+            aNode2.appendChild(textNode2);
+
+            cellNode1.appendChild(textNode1);
+            cellNode2.appendChild(aNode2);
+            rowNode.appendChild(cellNode1);
+            rowNode.appendChild(cellNode2);
+            table.appendChild(rowNode);
+
+        };
+
+      </script>
+    </div>
+
+    <script>
+
+      // bar chart data
+      var barData = {
+        labels : [
+          {% for item in labels %}
+            "{{ item }}",
+          {% endfor %}
+        ],
+
+        datasets : [
+            {
+          fillColor: "rgba(200, 80, 80, 0.1)",
+          strokeColor: "rgba(200, 80, 80, 1)",
+          pointColor: "rgba(246, 71, 64, 1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(151,187,205,1)",
+          bezierCurve : false,
+          data : [
+          {% for item in values %}
+                {{ item }},
+              {% endfor %}]
+            },
+           {
+          fillColor: "rgba(50,50,205,0.2)",
+          strokeColor: "rgba(50,50,205,1)",
+          pointColor: "rgba(0,0,255,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(151,187,205,1)",
+          bezierCurve : false,
+          data : [
+          {% for item in uvalues %}
+                {{ item }},
+              {% endfor %}]
+            }
+	      ]
+      }
+
+
+      Chart.defaults.global.animationSteps = 50;
+      Chart.defaults.global.tooltipYPadding = 16;
+      Chart.defaults.global.tooltipCornerRadius = 0;
+      Chart.defaults.global.tooltipTitleFontStyle = "normal";
+      Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+      Chart.defaults.global.animationEasing = "easeOutBounce";
+      Chart.defaults.global.responsive = false;
+      Chart.defaults.global.scaleLineColor = "black";
+      Chart.defaults.global.scaleFontSize = 16;
+
+      // get bar chart canvas
+      var mychart = document.getElementById("chart").getContext("2d");
+
+      steps = 10
+      max = {{ max }}
+      // draw bar chart
+      var LineChartDemo = new Chart(mychart).Line(barData, {
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true,
+        bezierCurve: false,
+      });
+
+    </script>
+  </center>
+</body>
+</html>
